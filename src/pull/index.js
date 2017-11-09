@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Animated, Easing, PanResponder } from 'react-native';
+import { Dimensions , StyleSheet, Animated, Easing, PanResponder } from 'react-native';
 
-
-const zu = 0.9;
+const deviceHeight = Dimensions.get('window').height;
 export default class Pull extends Component {
 
     xx = 0;
-
     constructor(props){
         super(props)
         this.translateY = new Animated.Value(0)
@@ -17,17 +15,11 @@ export default class Pull extends Component {
 
     }
 
-    test = (evt,gestureState) => {
-        console.log(gestureState.dy, 'params');
-    }
-
     componentWillMount() {
 
             this._panResponder = PanResponder.create({
             // 要求成为响应者：
             onStartShouldSetPanResponder: (evt, gestureState) => {
-                // console.log(evt, 'evt');
-                // console.log(gestureState.dy, 'gestureState');
                 return true;
             },
             onStartShouldSetPanResponderCapture: (evt, gestureState) => {
@@ -45,9 +37,20 @@ export default class Pull extends Component {
             onPanResponderMove: (evt, gestureState) => {
                 if(gestureState.dy < 0)
                     return;
-                this.xx += gestureState.dy;
 
-                let y = gestureState.dy;
+                let dy = gestureState.dy;
+                let y0 = gestureState.y0;
+                let moveY = gestureState.moveY;
+                let b =  y0 / deviceHeight;
+                let y = y0 - y0 * b; // 表示视图y轴坐标
+
+                console.log(dy, 'dy')
+                console.log(deviceHeight, 'deviceHeight')
+                console.log(b, 'b')
+                console.log(gestureState.y0, 'y0')
+                console.log(gestureState.moveY, 'moveY')
+                console.log('------------------------------')
+
                 // this.translateY.setValue(y);
                 Animated.spring(this.translateY, {
                     toValue: y,
